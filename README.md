@@ -1,24 +1,10 @@
 # hispeed-calc
 
-## Project setup
+## 概要
 ```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+自分用のハイスピ計算機です
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 参考
+計算式等を参考にさせていただきました。
+http://traveldiary624.blog.fc2.com/blog-entry-177.html

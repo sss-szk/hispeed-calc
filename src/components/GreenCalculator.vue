@@ -25,14 +25,14 @@
 
       <div class="row justify-content-center">
         <div class="col-md-2 mb-3">
-          <label for="green">☆HiSpeed:</label>
+          <label for="hispeed">☆HiSpeed:</label>
           <input type="number" step="0.01" class="form-control" id="green" v-model="hispeed" />
         </div>
       </div>
 
       <div class="row justify-content-center">
         <div class="col-md-3 mb-3">
-          <label for="hispeed">☆計算した緑数字:</label>
+          <label for="green">☆計算した緑数字:</label>
           <label class="big-bold-green">{{ Math.ceil(this.green) }}</label>
         </div>
       </div>

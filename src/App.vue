@@ -2,9 +2,13 @@
   <h1>ハイスピを固定しつつ白数字を変えたときの緑数字を出すやつ</h1>
   <label class="subtitle">現在のハイスピ設定</label>
   <HispeedCalculator v-model:bpm="bpm" v-model:white="white" v-model:green="green"></HispeedCalculator>
-  <p>入力内容を保存</p>
   <button type="button" class="btn btn-primary" @click="saveToCookies">Save</button>
-  <br class="button" />
+  <div v-if="isMessageVisible">
+    <br />
+    <p>初期値を保存しました</p>
+    <p>BPM:{{ this.bpm }} 白数字:{{ this.white }} 緑数字:{{ this.green }} </p>
+  </div>
+  <br />
   <label class="subtitle">新しいハイスピ設定</label>
   <GreenCalculator v-model:bpm="bpm"></GreenCalculator>
 </template>
@@ -25,7 +29,8 @@ export default {
       // フォーム初期値
       bpm: 187,
       white: 455,
-      green: 290
+      green: 290,
+      isMessageVisible: false,
     }
   },
   methods: {
@@ -33,6 +38,7 @@ export default {
       Cookies.set('bpm', this.bpm, { expires: 30 });
       Cookies.set('white', this.white, { expires: 30 });
       Cookies.set('green', this.green, { expires: 30 });
+      this.showMessage();
     },
     loadFromCookies() {
       const savedBpm = Cookies.get('bpm');
@@ -43,6 +49,17 @@ export default {
       if (savedWhite !== undefined) this.white = parseInt(savedWhite);
       if (savedGreen !== undefined) this.green = parseInt(savedGreen);
     },
+    showMessage() {
+      this.isMessageVisible = true;
+    },
+    closeMessage() {
+      if (this.isMessageVisible) this.isMessageVisible = false;
+    },
+  },
+  watch: {
+    bpm: 'closeMessage',
+    white: 'closeMessage',
+    green: 'closeMessage',
   },
   mounted(){
     this.loadFromCookies();

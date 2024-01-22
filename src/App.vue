@@ -1,9 +1,9 @@
 <template>
   <h1>ハイスピを固定しつつ白数字を変えたときの緑数字を出すやつ</h1>
   <label class="subtitle">現在のハイスピ設定</label>
-  <HispeedCalculator></HispeedCalculator>
+  <HispeedCalculator v-model:bpm="bpm" v-model:white="white" v-model:green="green"></HispeedCalculator>
   <label class="subtitle">新しいハイスピ設定</label>
-  <GreenCalculator></GreenCalculator>
+  <GreenCalculator v-model:bpm="bpm"></GreenCalculator>
 </template>
 
 <script>
@@ -15,7 +15,15 @@ export default {
   components: {
     HispeedCalculator,
     GreenCalculator
-  }
+  },
+  data: function(){
+    return {
+      // フォーム初期値
+      bpm: 185,
+      white: 455,
+      green: 290
+    }
+  },
 }
 </script>
 

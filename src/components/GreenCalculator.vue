@@ -12,7 +12,7 @@
       <div class="row justify-content-center nowrap">
         <div class="col-md-2 mb-3">
           <label for="bpm">BPM:</label>
-          <input type="number" class="form-control" id="bpm" v-model="bpm" />
+          <input type="number" class="form-control" id="bpm" v-model="localBpm" />
         </div>
       </div>
 
@@ -42,14 +42,35 @@
 </template>
 
 <script>
+import { ref, watch } from 'vue';
 export default {
-  // HTMLで使う変数
+  props: {
+    bpm: {
+      type: Number,
+      required: true,
+    },
+  },
   data: function () {
     return {
-      bpm: 187,
       white: 455,
       green: 0,
       hispeed: 1.76
+    };
+  },
+  setup(props, { emit }) {
+    // refを使用してローカルなリアクティブな変数 localBpm を定義し、props.bpm の初期値で初期化
+    const localBpm = ref(props.bpm);
+    // localBpm の変更を検知して、emit('update:bpm', newBpm) で親コンポーネントに通知
+    watch(localBpm, (newBpm) => {
+      emit('update:bpm', newBpm);
+    });
+    // props.bpm の変更を検知して、localBpm.value を新しい値で更新
+    watch(() => props.bpm, (newBpm) => {
+      localBpm.value = newBpm;
+    });
+    // setup関数から返すオブジェクト。これにより、コンポーネント内で使用できる変数や関数を提供
+    return {
+      localBpm,
     };
   },
   methods: {

@@ -10,9 +10,16 @@
       </div>
 
       <div class="row justify-content-center">
+        <label for="white" >白数字:{{ localWhite }}</label>
+      </div>
+      <div class="row justify-content-center">
         <div class="col-md-2 mb-3">
-          <label for="white">白数字:</label>
-          <input type="number" class="form-control" id="white" v-model="localWhite" />
+          <label for="sud">SUD+:</label>
+          <input type="number" class="form-control" id="sud" v-model="localSud" />
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="lift">LIFT:</label>
+          <input type="number" class="form-control" id="lift" v-model="localLift" min="0"/>
         </div>
       </div>
 
@@ -46,6 +53,14 @@ export default {
       type: Number,
       required: true,
     },
+    lift: {
+      type: Number,
+      required: true,
+    },
+    sud: {
+      type: Number,
+      required: true,
+    },
     green: {
       type: Number,
       required: true,
@@ -60,6 +75,8 @@ export default {
   setup(props, { emit }) {
     // refを使用してローカルなリアクティブな変数 localBpm を定義し、props.bpm の初期値で初期化
     const localBpm = ref(props.bpm);
+    const localSud = ref(props.sud);
+    const localLift = ref(props.lift);
     const localWhite = ref(props.white);
     const localGreen = ref(props.green);
 
@@ -69,6 +86,14 @@ export default {
     });
     watch(localWhite, (newWhite) => {
       emit('update:white', newWhite);
+    });
+    watch(localSud, (newSud) => {
+      emit('update:sud', newSud);
+      emit('update:white', localSud.value + localLift.value);
+    });
+    watch(localLift, (newLift) => {
+      emit('update:lift', newLift);
+      emit('update:white', localSud.value + localLift.value);
     });
     watch(localGreen, (newGreen) => {
       emit('update:green', newGreen);
@@ -81,13 +106,19 @@ export default {
     watch(() => props.white, (newWhite) => {
       localWhite.value = newWhite;
     });
-    watch(() => props.white, (newGreen) => {
-      localWhite.value = newGreen;
+    watch(() => props.sud, (newSud) => {
+      localSud.value = newSud;
+    });
+    watch(() => props.lift, (newLift) => {
+      localLift.value = newLift;
+    });
+    watch(() => props.green, (newGreen) => {
+      localGreen.value = newGreen;
     });
 
     // setup関数から返すオブジェクト。これにより、コンポーネント内で使用できる変数や関数を提供
     return {
-      localBpm,localWhite,localGreen,
+      localBpm,localWhite,localGreen,localSud,localLift
     };
   },
   methods: {

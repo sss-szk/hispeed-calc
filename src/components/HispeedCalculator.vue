@@ -36,13 +36,17 @@
           <label class="big-bold">{{ this.hispeed }}</label>
         </div>
       </div>
+      
+      <div>
+        <p>ノーツ表示時間:{{ this.blue }}s</p>
+      </div>
     </div>
 
   </div>
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 export default {
   props: {
     bpm: {
@@ -66,12 +70,6 @@ export default {
       required: true,
     },
   },
-  // HTMLで使う変数
-  data: function () {
-    return {
-      hispeed: 0
-    };
-  },
   setup(props, { emit }) {
     // refを使用してローカルなリアクティブな変数 localBpm を定義し、props.bpm の初期値で初期化
     const localBpm = ref(props.bpm);
@@ -79,6 +77,9 @@ export default {
     const localLift = ref(props.lift);
     const localWhite = ref(props.white);
     const localGreen = ref(props.green);
+
+    const hispeed = ref(0);
+    const blue = ref(0);
 
     // localBpm の変更を検知して、emit('update:bpm', newBpm) で親コンポーネントに通知
     watch(localBpm, (newBpm) => {
@@ -89,11 +90,9 @@ export default {
     });
     watch(localSud, (newSud) => {
       emit('update:sud', newSud);
-      emit('update:white', localSud.value + localLift.value);
     });
     watch(localLift, (newLift) => {
       emit('update:lift', newLift);
-      emit('update:white', localSud.value + localLift.value);
     });
     watch(localGreen, (newGreen) => {
       emit('update:green', newGreen);
@@ -102,41 +101,48 @@ export default {
     // props.bpm の変更を検知して、localBpm.value を新しい値で更新
     watch(() => props.bpm, (newBpm) => {
       localBpm.value = newBpm;
+      hispeed.value = calcHS(localWhite.value, localBpm.value, localGreen.value);
     });
     watch(() => props.white, (newWhite) => {
       localWhite.value = newWhite;
+      hispeed.value = calcHS(localWhite.value, localBpm.value, localGreen.value);
     });
     watch(() => props.sud, (newSud) => {
       localSud.value = newSud;
+      localWhite.value = newSud + localLift.value;
     });
     watch(() => props.lift, (newLift) => {
       localLift.value = newLift;
+      localWhite.value = localSud.value + newLift;
     });
     watch(() => props.green, (newGreen) => {
       localGreen.value = newGreen;
+      hispeed.value = calcHS(localWhite.value, localBpm.value, localGreen.value);
+      blue.value = calcBlue(localGreen.value);
     });
+
+    // onMountedフックで初期化
+    onMounted(() => {
+      hispeed.value = calcHS(localWhite.value, localBpm.value, localGreen.value);
+      blue.value = calcBlue(localGreen.value);
+    });
+
+    function calcHS(white, bpm, green) {
+      var hs = 174800 * ( (1000 - parseFloat(white)) / 1000) / (parseFloat(bpm) * parseFloat(green));
+      hs = Math.ceil( hs * 100 );
+      hs = hs / 100;
+      return hs;
+    }
+
+    function calcBlue(green) {
+      var blue =  parseFloat(green) * 0.01666 / 10;
+      return parseFloat(blue.toFixed(3));
+    }
 
     // setup関数から返すオブジェクト。これにより、コンポーネント内で使用できる変数や関数を提供
     return {
-      localBpm,localWhite,localGreen,localSud,localLift
+      localBpm,localWhite,localGreen,localSud,localLift,hispeed,blue
     };
-  },
-  methods: {
-    calcHS() {
-      var hispeed = 174800 * ( (1000 - this.white) / 1000) / (this.bpm * this.green);
-      hispeed = Math.ceil( hispeed * 100 );
-      hispeed = hispeed / 100;
-      this.hispeed = hispeed;
-    }
-  },
-  watch: {
-    localBpm: 'calcHS',
-    localWhite: 'calcHS',
-    localGreen: 'calcHS',
-  },
-  mounted() {
-    // ページが表示されたときにハイスピを計算
-    this.calcHS();
   }
 }
 </script>

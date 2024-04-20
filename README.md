@@ -2,6 +2,7 @@
 
 ## 概要
 自分用のハイスピ計算機です
+https://sss-szk.github.io/hispeed-calc/
 
 ### 参考
 計算式等を参考にさせていただきました。

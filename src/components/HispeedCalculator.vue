@@ -37,9 +37,7 @@
         </div>
       </div>
       
-      <div>
-        <p>ノーツ表示時間:{{ this.blue }}s</p>
-      </div>
+      <DetailInfo v-model:green="localGreen" v-model:white="localWhite"></DetailInfo>
     </div>
 
   </div>
@@ -47,7 +45,12 @@
 
 <script>
 import { ref, watch, onMounted } from 'vue';
+import DetailInfo from './DetailInfo.vue';
+
 export default {
+  components: {
+    DetailInfo
+  },
   props: {
     bpm: {
       type: Number,

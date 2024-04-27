@@ -44,9 +44,7 @@
         </div>
       </div>
 
-      <div>
-        <p>ノーツ表示時間:{{ this.blue }}s</p>
-      </div>
+      <DetailInfo v-model:green="green" v-model:white="white"></DetailInfo>
     </div>
 
   </div>
@@ -54,7 +52,12 @@
 
 <script>
 import { ref, watch ,onMounted } from 'vue';
+import DetailInfo from './DetailInfo.vue';
+
 export default {
+  components: {
+    DetailInfo
+  },
   props: {
     bpm: {
       type: Number,
@@ -69,7 +72,6 @@ export default {
     const white = ref(0);
     const lift = ref(0);
     const sud = ref(0);
-    const blue = ref(0);
 
     // localBpm の変更を検知して、emit('update:bpm', newBpm) で親コンポーネントに通知
     watch(localBpm, (newBpm) => {
@@ -81,9 +83,6 @@ export default {
       localBpm.value = newBpm;
       green.value = calcGreen(white.value, localBpm.value, hispeed.value);
     });
-    watch(() => green.value, (newGreen) => {
-      blue.value = calcBlue(newGreen);
-    })
     watch(() => hispeed.value, (newHs) => {
       hispeed.value = newHs;
       green.value = calcGreen(white.value, localBpm.value, hispeed.value);
@@ -108,7 +107,6 @@ export default {
       sud.value = 220;
       lift.value = 240;
       green.value = calcGreen(white.value , localBpm.value , hispeed.value);
-      blue.value = calcBlue(green.value);
     });
 
     function calcGreen(white, bpm, hs) {
@@ -116,14 +114,9 @@ export default {
       return green;
     }
 
-    function calcBlue(green) {
-      var blue =  parseFloat(green) * 0.01666 / 10;
-      return parseFloat(blue.toFixed(3));
-    }
-
     // setup関数から返すオブジェクト。これにより、コンポーネント内で使用できる変数や関数を提供
     return {
-      localBpm,green,blue,hispeed,white,lift,sud
+      localBpm,green,hispeed,white,lift,sud
     };
   }
 }

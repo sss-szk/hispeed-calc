@@ -42,7 +42,7 @@ setup(props) {
     }
 
     function calcLength(white) {
-        var len = parseFloat(white) * 0.35 /10;
+        var len = 35 - parseFloat(white) * 0.35 /10;
         return parseFloat(len.toFixed(2));
     }
 
